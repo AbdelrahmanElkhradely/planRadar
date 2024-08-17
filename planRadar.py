@@ -69,7 +69,7 @@ def execute_requests():
                     "project-id": "1319158",
                     "ticket-type-id": "pokwlmn",
                     "component-id": data["data"][0]["id"],
-                    "subject": "test ticket khradely final",
+                    "subject": "test ticket khradely final using webhook",
                     "status-id": "lm"
                 }
             }
