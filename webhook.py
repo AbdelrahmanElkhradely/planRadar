@@ -1,5 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from flask import Flask, request, jsonify
+import requests
 
 def make_post_request(url, data=None, headers=None):
     """
@@ -68,7 +70,7 @@ def execute_requests():
                     "project-id": "1319158",
                     "ticket-type-id": "pokwlmn",
                     "component-id": data["data"][0]["id"],
-                    "subject": "test ticket khradely final using webhook",
+                    "subject": "test ticket khradely final using webhook yarab flask",
                     "status-id": "lm"
                 }
             }
@@ -86,40 +88,15 @@ def execute_requests():
 
     return None, None, None
 
+app = Flask(__name__)
 
-class WebhookHandler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        # Get the content length
-        content_length = int(self.headers['Content-Length'])
-        # Read the data
-        post_data = self.rfile.read(content_length)
-        
-        # Parse JSON data
-        try:
-            data = json.loads(post_data.decode('utf-8'))
-        except json.JSONDecodeError:
-            data = {}
-        
-        # Process the JSON data
-        response1, response2, response3 = execute_requests()
-        print(response3)
-
-        print("Received data:", data)
-        
-        # Send response
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
-        response = {'status': 'success'}
-        self.wfile.write(json.dumps(response).encode('utf-8'))
-    
-
-
-def run(server_class=HTTPServer, handler_class=WebhookHandler, port=8080):
-    server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
-    print(f'Starting webhook listener on port {port}...')
-    httpd.serve_forever()
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.get_json()
+    print("Received data:", data)
+    execute_requests()
+    response = {'status': 'success'}
+    return jsonify(response), 200
 
 if __name__ == "__main__":
-    run()
+    app.run(port=8080)
