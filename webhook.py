@@ -94,9 +94,18 @@ app = Flask(__name__)
 def webhook():
     data = request.get_json()
     print("Received data:", data)
-    execute_requests()
-    response = {'status': 'success'}
-    return jsonify(response), 200
+    response1, response2, response3, = execute_requests()
+    response = json.dumps({
+        "header": {
+            "requestId": "1234-56789-24325-64345764",
+            "status": {
+                "code": "I00000",
+                "details": "Success"
+            }
+        }
+    })
+    return response, 201
+
 
 if __name__ == "__main__":
     app.run(port=8080)
